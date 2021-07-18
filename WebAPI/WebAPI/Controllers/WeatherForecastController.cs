@@ -5,35 +5,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly WeatherHolder _holder;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(WeatherHolder holder)
         {
-            _logger = logger;
+            _holder = holder;
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("get")]
+        public IEnumerable<WeatherForecast> Get([FromQuery] DateTime dateStart, [FromQuery] DateTime dateFinish)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            if (dateStart == DateTime.MinValue && dateFinish == DateTime.MinValue)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return _holder.ListWeathers; 
+            }
+            else
+            {
+                return _holder.ShowData(dateStart, dateFinish);
+            }
         }
+
+        [HttpPost]
+        public void Post([FromQuery] DateTime date, [FromQuery] int temperatureC, [FromQuery] string summary)
+        {
+            _holder.AddData(date, temperatureC, summary);
+        }
+
+        [HttpPatch]
+        public void Patch([FromQuery] DateTime date, [FromQuery] int temperatureC)
+        {
+            _holder.ChangeData(date, temperatureC);
+        }
+
+        [HttpDelete]
+        public void Delete([FromQuery] DateTime date) 
+        {
+            _holder.DeleteDate(date);
+        }
+
     }
 }
