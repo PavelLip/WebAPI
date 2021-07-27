@@ -12,33 +12,17 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
-        public List<AgentInfo> ListCpuMetrics;
-
-        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        //public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        [HttpGet("agent")]
-        public IActionResult GetMetricsFromAgent()
+        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllClasters([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            var x = DateTime.Now.TimeOfDay;
-            while (x < fromTime && x <= toTime)
-            {
-                if (x >= fromTime)
-                {
-                    var y = Process.GetProcesses();
-
-                    for (int i = 0; i < y.Length; i++)
-                    {
-                        ListCpuMetrics.Add(new AgentInfo { AgentId = y[i].Id });
-                    }
-                }
-            }
-            return Ok(ListCpuMetrics);
+            return Ok();
         }
+
     }
 }
