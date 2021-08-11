@@ -13,23 +13,20 @@ namespace MetricsAgent.Controllers
     public class HddMetricsController : ControllerBase
     {
         private IHddMetricsRepository repository;
+
         private readonly ILogger<HddMetricsController> _logger;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger)
-        {
-            _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в HddMetricsController");
-        }
-
-        public HddMetricsController(IHddMetricsRepository repository)
+        public HddMetricsController(IHddMetricsRepository repository, ILogger<HddMetricsController> logger)
         {
             this.repository = repository;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в HddMetricsController");
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsHdd([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsHdd)");
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(HddMetricsController - GetMetricsHdd)");
             var metrics = repository.GetByTimePeriod(fromTime, toTime);
 
             var response = new AllHddMetricsResponse()
@@ -48,6 +45,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] HddMetricCreateRequest request)
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(HddMetricsController - Create)");
             repository.Create(new MetricData
             {
                 Time = request.Time,
@@ -60,6 +58,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(HddMetricsController - GetAll)");
             var metrics = repository.GetAll();
 
             var response = new AllHddMetricsResponse()

@@ -17,20 +17,17 @@ namespace MetricsAgent.Controllers
 
         private readonly ILogger<CpuMetricsController> _logger;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger)
-        {
-            _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
-        }
-        public CpuMetricsController(ICpuMetricsRepository repository)
+        public CpuMetricsController(ICpuMetricsRepository repository, ILogger<CpuMetricsController> logger)
         {
             this.repository = repository;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsCpu([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsCpu)");
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(CpuMetricsController - GetMetricsCpu)");
             var metrics = repository.GetByTimePeriod(fromTime, toTime); 
 
             var response = new AllCpuMetricsResponse()
@@ -49,6 +46,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(CpuMetricsController - Create)");
             repository.Create(new MetricData
             {
                 Time = request.Time,
@@ -61,6 +59,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(CpuMetricsController - GetAll)");
             var metrics = repository.GetAll();
 
             var response = new AllCpuMetricsResponse()

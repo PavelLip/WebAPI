@@ -217,7 +217,29 @@ namespace MetricsAgent.DAL
 
         public IList<MetricData> GetAll()
         {
-            throw new NotImplementedException();
+
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+
+            cmd.CommandText = "SELECT * FROM dotnetmetrics";
+
+            var returnList = new List<MetricData>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    returnList.Add(new MetricData
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                    });
+                }
+            }
+
+            return returnList;
         }
 
         public MetricData GetById(int id)
@@ -231,7 +253,6 @@ namespace MetricsAgent.DAL
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
 
-            // прописываем в команду SQL запрос на получение всех данных из таблицы
             cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE time>=@TimeStart and time <=@TimeFinish;";
             cmd.Parameters.AddWithValue("@TimeStart", (int)timeStart.TotalDays);
             cmd.Parameters.AddWithValue("@TimeFinish", (int)timeFinish.TotalDays);
@@ -276,22 +297,15 @@ namespace MetricsAgent.DAL
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
-            // создаем команду
             using var cmd = new SQLiteCommand(connection);
-            // прописываем в команду SQL запрос на вставку данных
             cmd.CommandText = "INSERT INTO hddmetrics(value, time) VALUES(@value, @time)";
 
-            // добавляем параметры в запрос из нашего объекта
             cmd.Parameters.AddWithValue("@value", item.Value);
 
-            // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
-            // через свойство
             var x = item.Time.TotalSeconds;
             cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
-            // подготовка команды к выполнению
             cmd.Prepare();
 
-            // выполнение команды
             cmd.ExecuteNonQuery();
         }
 
@@ -302,7 +316,29 @@ namespace MetricsAgent.DAL
 
         public IList<MetricData> GetAll()
         {
-            throw new NotImplementedException();
+
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+
+            cmd.CommandText = "SELECT * FROM hddmetrics";
+
+            var returnList = new List<MetricData>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    returnList.Add(new MetricData
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                    });
+                }
+            }
+
+            return returnList;
         }
 
         public MetricData GetById(int id)
@@ -316,7 +352,6 @@ namespace MetricsAgent.DAL
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
 
-            // прописываем в команду SQL запрос на получение всех данных из таблицы
             cmd.CommandText = "SELECT * FROM hddmetrics WHERE time>=@TimeStart and time <=@TimeFinish;";
             cmd.Parameters.AddWithValue("@TimeStart", (int)timeStart.TotalDays);
             cmd.Parameters.AddWithValue("@TimeFinish", (int)timeFinish.TotalDays);
@@ -355,28 +390,20 @@ namespace MetricsAgent.DAL
     public class NetworkMetricsRepository : INetworkMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
-        // инжектируем соединение с базой данных в наш репозиторий через конструктор
 
         public void Create(MetricData item)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
-            // создаем команду
             using var cmd = new SQLiteCommand(connection);
-            // прописываем в команду SQL запрос на вставку данных
             cmd.CommandText = "INSERT INTO networkmetrics(value, time) VALUES(@value, @time)";
 
-            // добавляем параметры в запрос из нашего объекта
             cmd.Parameters.AddWithValue("@value", item.Value);
 
-            // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
-            // через свойство
             var x = item.Time.TotalSeconds;
             cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
-            // подготовка команды к выполнению
             cmd.Prepare();
 
-            // выполнение команды
             cmd.ExecuteNonQuery();
         }
 
@@ -387,7 +414,29 @@ namespace MetricsAgent.DAL
 
         public IList<MetricData> GetAll()
         {
-            throw new NotImplementedException();
+
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+
+            cmd.CommandText = "SELECT * FROM networkmetrics";
+
+            var returnList = new List<MetricData>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    returnList.Add(new MetricData
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                    });
+                }
+            }
+
+            return returnList;
         }
 
         public MetricData GetById(int id)
@@ -401,7 +450,6 @@ namespace MetricsAgent.DAL
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
 
-            // прописываем в команду SQL запрос на получение всех данных из таблицы
             cmd.CommandText = "SELECT * FROM networkmetrics WHERE time>=@TimeStart and time <=@TimeFinish;";
             cmd.Parameters.AddWithValue("@TimeStart", (int)timeStart.TotalDays);
             cmd.Parameters.AddWithValue("@TimeFinish", (int)timeFinish.TotalDays);
@@ -440,28 +488,20 @@ namespace MetricsAgent.DAL
     public class RamMetricsRepository : IRamMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
-        // инжектируем соединение с базой данных в наш репозиторий через конструктор
 
         public void Create(MetricData item)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
-            // создаем команду
             using var cmd = new SQLiteCommand(connection);
-            // прописываем в команду SQL запрос на вставку данных
             cmd.CommandText = "INSERT INTO rammetrics(value, time) VALUES(@value, @time)";
 
-            // добавляем параметры в запрос из нашего объекта
             cmd.Parameters.AddWithValue("@value", item.Value);
 
-            // в таблице будем хранить время в секундах, потому преобразуем перед записью в секунды
-            // через свойство
             var x = item.Time.TotalSeconds;
             cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
-            // подготовка команды к выполнению
             cmd.Prepare();
 
-            // выполнение команды
             cmd.ExecuteNonQuery();
         }
 
@@ -472,7 +512,29 @@ namespace MetricsAgent.DAL
 
         public IList<MetricData> GetAll()
         {
-            throw new NotImplementedException();
+
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+
+            cmd.CommandText = "SELECT * FROM rammetrics";
+
+            var returnList = new List<MetricData>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    returnList.Add(new MetricData
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                    });
+                }
+            }
+
+            return returnList;
         }
 
         public MetricData GetById(int id)
@@ -486,7 +548,6 @@ namespace MetricsAgent.DAL
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
 
-            // прописываем в команду SQL запрос на получение всех данных из таблицы
             cmd.CommandText = "SELECT * FROM rammetrics WHERE time>=@TimeStart and time <=@TimeFinish;";
             cmd.Parameters.AddWithValue("@TimeStart", (int)timeStart.TotalDays);
             cmd.Parameters.AddWithValue("@TimeFinish", (int)timeFinish.TotalDays);

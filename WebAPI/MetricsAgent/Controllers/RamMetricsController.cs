@@ -13,23 +13,20 @@ namespace MetricsAgent.Controllers
     public class RamMetricsController : ControllerBase
     {
         private IRamMetricsRepository repository;
+
         private readonly ILogger<RamMetricsController> _logger;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger)
-        {
-            _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в RamMetricsController");
-        }
-
-        public RamMetricsController(IRamMetricsRepository repository)
+        public RamMetricsController(IRamMetricsRepository repository, ILogger<RamMetricsController> logger)
         {
             this.repository = repository;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в RamMetricsController");
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsRam([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsRam)");
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - GetMetricsRam)");
             var metrics = repository.GetByTimePeriod(fromTime, toTime);
 
             var response = new AllRamMetricsResponse()
@@ -48,6 +45,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] RamMetricCreateRequest request)
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - Create)");
             repository.Create(new MetricData
             {
                 Time = request.Time,
@@ -60,6 +58,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - GetAll)");
             var metrics = repository.GetAll();
 
             var response = new AllRamMetricsResponse()

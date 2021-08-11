@@ -13,23 +13,20 @@ namespace MetricsAgent.Controllers
     public class DotNetMetricsController : ControllerBase
     {
         private readonly ILogger<DotNetMetricsController> _logger;
+
         private IDotNetMetricsRepository repository;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger)
+        public DotNetMetricsController(IDotNetMetricsRepository repository, ILogger<DotNetMetricsController> logger)
         {
+            this.repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
         }
 
-        public DotNetMetricsController(IDotNetMetricsRepository repository)
-        {
-            this.repository = repository;
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
+    [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsDotNet([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsDotNet)");
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(DotNetMetricsController - GetMetricsDotNet)");
             var metrics = repository.GetByTimePeriod(fromTime, toTime);
 
             var response = new AllDotNetMetricsResponse()
@@ -48,6 +45,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(DotNetMetricsController - Create)");
             repository.Create(new MetricData
             {
                 Time = request.Time,
@@ -60,6 +58,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsDotNet - GetAll)");
             var metrics = repository.GetAll();
 
             var response = new AllDotNetMetricsResponse()

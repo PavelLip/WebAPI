@@ -33,6 +33,10 @@ namespace MetricsAgent
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
             //services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>(); // для 5го урока учесть!!!
             services.AddSwaggerGen(c =>
                     {
