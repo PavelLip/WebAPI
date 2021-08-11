@@ -13,23 +13,20 @@ namespace MetricsAgent.Controllers
     public class NetworkMetricsController : ControllerBase
     {
         private INetworkMetricsRepository repository;
+
         private readonly ILogger<NetworkMetricsController> _logger;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger)
-        {
-            _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
-        }
-
-        public NetworkMetricsController(INetworkMetricsRepository repository)
+        public NetworkMetricsController(INetworkMetricsRepository repository, ILogger<NetworkMetricsController> logger)
         {
             this.repository = repository;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsNetwor([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог(GetMetricsNetwor)");
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - GetMetricsNetwor)");
             var metrics = repository.GetByTimePeriod(fromTime, toTime);
 
             var response = new AllNetworkMetricsResponse()
@@ -48,6 +45,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - Create)");
             repository.Create(new MetricData
             {
                 Time = request.Time,
@@ -60,6 +58,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            _logger.LogInformation("Привет! Это наше первое сообщение в лог(NetworkMetricsController - GetAll)");
             var metrics = repository.GetAll();
 
             var response = new AllNetworkMetricsResponse()
