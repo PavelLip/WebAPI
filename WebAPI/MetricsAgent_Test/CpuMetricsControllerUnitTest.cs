@@ -11,18 +11,15 @@ namespace MetricsAgent_Test
     public class CpuMetricsControllerUnitTests
     {
 
-        //public IActionResult GetMetricsCpu([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        
-        //public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        //ничего не понимаю с тестами
 
         private CpuMetricsController controller;
-        private readonly ILogger<CpuMetricsController> _logger;
         private Mock<ICpuMetricsRepository> mock;
 
         public CpuMetricsControllerUnitTests()
         {
             mock = new Mock<ICpuMetricsRepository>();
-            controller = new CpuMetricsController(mock.Object, _logger);
+            controller = new CpuMetricsController(mock.Object);
         }
 
         [Fact]
